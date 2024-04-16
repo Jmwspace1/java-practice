@@ -1,0 +1,97 @@
+public class TuringMachine {
+    private int state;
+    private int headPosition;
+    private char[] tape;
+
+    public TuringMachine(String input) {
+        tape = (input + " ").toCharArray(); // Blank at the end to signify the end of input
+        state = 0;
+        headPosition = 0;
+    }
+
+    public boolean accept() {
+        while (state != -1) {
+            switch (state) {
+                case 0:
+                    if (tape[headPosition] == 'a') {
+                        tape[headPosition] = 'X';
+                        moveRight();
+                        state = 1;
+                    } else if (tape[headPosition] == ' ') {
+                        state = -1; // Accept state
+                    } else {
+                        state = -1; // Reject state
+                    }
+                    break;
+                case 1:
+                    if (tape[headPosition] == 'a') {
+                        moveRight();
+                    } else if (tape[headPosition] == 'b') {
+                        tape[headPosition] = 'Y';
+                        moveRight();
+                        state = 2;
+                    } else {
+                        state = -1; // Reject state
+                    }
+                    break;
+                case 2:
+                    if (tape[headPosition] == 'Y') {
+                        moveRight();
+                    } else if (tape[headPosition] == ' ') {
+                        moveLeft(); // Move back to the last 'Y'
+                        state = 3;
+                    } else {
+                        state = -1; // Reject state
+                    }
+                    break;
+                case 3:
+                    if (tape[headPosition] == 'Y') {
+                        moveLeft();
+                    } else if (tape[headPosition] == 'X') {
+                        moveRight();
+                        state = 0;
+                    } else if (tape[headPosition] == ' ') {
+                        state = -1; // Accept state
+                    } else {
+                        state = -1; // Reject state
+                    }
+                    break;
+            }
+        }
+        return state == -1 && tape[headPosition] == ' ';
+    }
+
+    private void moveRight() {
+        headPosition++;
+        if (headPosition == tape.length) {
+            extendTape();
+        }
+    }
+
+    private void moveLeft() {
+        headPosition--;
+        if (headPosition < 0) {
+            extendTapeLeft();
+            headPosition = 0;
+        }
+    }
+
+    private void extendTape() {
+        char[] newTape = new char[tape.length * 2];
+        System.arraycopy(tape, 0, newTape, 0, tape.length);
+        tape = newTape;
+    }
+
+    private void extendTapeLeft() {
+        char[] newTape = new char[tape.length * 2];
+        System.arraycopy(tape, 0, newTape, tape.length / 2, tape.length / 2);
+        headPosition += tape.length / 2;
+        tape = newTape;
+    }
+
+    public static void main(String[] args) {
+        TuringMachine tm = new TuringMachine("aaabbb");
+        boolean result = tm.accept();
+        System.out.println("Is accepted: " + result);
+    }
+}
