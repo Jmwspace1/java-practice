@@ -1,0 +1,17 @@
+package classpart;
+
+public class FunctionTest {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		int[] arr = {10, 20, 30 ,40, 50, 60};
+		int sum = 0;
+		for (int i= 0; i < arr.length; i++) {
+			sum += arr[i];
+		}
+		System.out.println("sum of array elements is:" + sum);
+	}
+	
+
+}
+2개 이상의 숫자들을 for 문을 통하여 합한다.
